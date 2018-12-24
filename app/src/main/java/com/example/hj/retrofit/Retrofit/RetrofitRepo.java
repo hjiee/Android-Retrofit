@@ -1,19 +1,26 @@
 package com.example.hj.retrofit.Retrofit;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
+
 public class RetrofitRepo {
 
-    private String output;
+    @SerializedName("name")
+    @Expose
+    private String name;
 
-    /**
-     *
-     */
-    public void setOutput(String output)
+    @SerializedName("phone")
+    @Expose
+    private String phone;
+    
+    public String getName()
     {
-        this.output = output;
+        return name;
     }
-    public String getOutput()
+    public String getPhone()
     {
-        return output;
+        return phone;
     }
-
 }
