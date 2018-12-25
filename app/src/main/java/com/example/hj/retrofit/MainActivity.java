@@ -2,6 +2,7 @@ package com.example.hj.retrofit;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.hj.retrofit.Retrofit.RetrofitRepo;
@@ -16,7 +17,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String url = "https://2018-anyfood-dev.workservice.kr:773/kr/test/";
+
     private TextView textview;
 
     @Override
@@ -26,10 +27,38 @@ public class MainActivity extends AppCompatActivity {
 
         textview = (TextView)findViewById(R.id.textview);
 
-        post();
+        get();
+     //   post();
 
     }
 
+    public void get()
+    {
+        Retrofit retrofit_get = new Retrofit.Builder()
+                .baseUrl(RetrofitService.url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        //API interface 생성
+        RetrofitService retrofitService_get = retrofit_get.create(RetrofitService.class);
+
+        Call<RetrofitRepo> comment = retrofitService_get.getGet("dongju");
+        comment.enqueue(new Callback<RetrofitRepo>() {
+            @Override
+            public void onResponse(Call<RetrofitRepo> call, Response<RetrofitRepo> response) {
+//                textview.setText(response.body().getName());
+                textview.setText(response.body().getName());
+                Log.v("Test","Response Success to Get");
+                Log.v("Test",response.toString());
+            }
+
+            @Override
+            public void onFailure(Call<RetrofitRepo> call, Throwable t) {
+                Log.v("Test","Response Fail to Get");
+            }
+        });
+
+    }
 
     public void post()
     {
@@ -38,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
          * @addConverterFactory 객체와 JSON의 변환을 자동으로 하도록 설정
          */
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
+                .baseUrl(RetrofitService.url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -47,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
 
         HashMap<String, Object> input = new HashMap<>();
-        input.put("name", "dongju");
+        input.put("김동주", "010-1234-1234");
 
         Call<RetrofitRepo> call = retrofitService.getInfo(input);
         //요청 수행
@@ -55,14 +84,16 @@ public class MainActivity extends AppCompatActivity {
             //성공시
             @Override
             public void onResponse(Call<RetrofitRepo> call, Response<RetrofitRepo> response) {
-       //         RetrofitRepo repo = response.body();
+                RetrofitRepo repo = response.body();
        //         textview.setText(repo.getName());
-                textview.setText(response.body().getName());
+                textview.setText(repo.toString());
+                Log.v("Test","Success to Response");
+                Log.v("Test",response.toString());
             }
             //실패시
             @Override
             public void onFailure(Call<RetrofitRepo> call, Throwable t) {
-
+                Log.v("Test","Fail to Response");
             }
         });
     }
