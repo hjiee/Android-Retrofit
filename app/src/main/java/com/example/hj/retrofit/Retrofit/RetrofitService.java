@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -13,7 +12,19 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface RetrofitService {
-    public static final String url = "https://2018-anyfood-dev.workservice.kr:773/";
+      public static final String url = "https://2018-anyfood-dev.workservice.kr:773/";
+      public final String API_url = "http://jsonplaceholder.typicode.com";
+      @GET("/posts/{userId}")
+      Call<RetrofitRepo> getFirst(@Path("userId") String id);
+
+      @GET("/posts")
+      Call<List<RetrofitRepo>> getSecond(@Query("userId") String id);
+
+      @FormUrlEncoded
+      @POST("/posts")
+      Call<RetrofitRepo> postFirst(@FieldMap HashMap<String, Object> parameters);
+
+
 
 
     /**
@@ -39,6 +50,8 @@ public interface RetrofitService {
      */
     @FormUrlEncoded
     @POST("kr/test/test.php?act=dongju")
-    Call<RetrofitRepo> getInfo(@FieldMap HashMap<String, Object> param);
+    Call<RetrofitRepo> getComments(@FieldMap HashMap<String, Object> param);
+
+
 
 }
