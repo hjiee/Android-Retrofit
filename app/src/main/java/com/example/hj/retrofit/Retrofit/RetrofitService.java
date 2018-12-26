@@ -13,32 +13,17 @@ import retrofit2.http.Query;
 
 public interface RetrofitService {
       public static final String url = "https://2018-anyfood-dev.workservice.kr:773/";
-      public final String API_url = "http://jsonplaceholder.typicode.com";
-      @GET("/posts/{userId}")
-      Call<RetrofitRepo> getFirst(@Path("userId") String id);
-
-      @GET("/posts")
-      Call<List<RetrofitRepo>> getSecond(@Query("userId") String id);
-
-      @FormUrlEncoded
-      @POST("/posts")
-      Call<RetrofitRepo> postFirst(@FieldMap HashMap<String, Object> parameters);
-
-
-
 
     /**
+     * @GET
+     * @Path
+     * @Query
      * @details GET/POST/DELETE/PUT 메소드들을 인터페이스에 구현하여 사용할 수 있다.
      * @param act
      * @return
      */
     @GET("kr/test/test.php")
-    Call<RetrofitRepo> getGet(@Query("act") String act);
-
-
-//    @FormUrlEncoded
-//    @POST("test.php")
-//    Call<RetrofitRepo> getPost(@Path("act") String act);
+    Call<RetrofitRepo> getGet(@Query("act") Object act);
 
     /**
      * @POST("/posts") : POST 방식의 통신입니다.
@@ -51,7 +36,5 @@ public interface RetrofitService {
     @FormUrlEncoded
     @POST("kr/test/test.php?act=dongju")
     Call<RetrofitRepo> getComments(@FieldMap HashMap<String, Object> param);
-
-
 
 }

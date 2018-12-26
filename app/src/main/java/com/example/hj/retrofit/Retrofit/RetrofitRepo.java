@@ -3,79 +3,68 @@ package com.example.hj.retrofit.Retrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class RetrofitRepo {
-
-//    @SerializedName("respons") //reponse 시 Fail
-//    @Expose
-//    private String response;
-//    public String getresponse() { return this.response; }
-    //    @SerializedName("info")
-//    @Expose
-//    private String info;
-
-//    public String getinfo() { return this.info; }
-
+    // Response에대한 정보를 담는 변수
+    private Result resultInfo;
+    private Info infoInfo;
 
     /**
      * @SerializedName GSON 자바 객체 필드에 JSON 키를 매핑하는 어노테이션
+     * @DTO <Data Transfer Object> 로직을 갖고 있지 않는 순수한 데이터 객체이며 속성과 그 속성에 접근하기 위한 getter, setter 메소드만 가진 클래스를 말합니다
+     * @Expose object class의 필드에 @Expose 어노테이션을 추가하면 해당 필드만 json으로 만들어준다
      */
-    @SerializedName("name")
+
+    //Response result
+    @SerializedName("result")
     @Expose
-    private String name;
+    private Result result = null;
+    public Result getResultInfo() { return result; }
 
-    @SerializedName("phone")
+    public class Result {
+        //요청결과 / 실패 : failure , 성공 : success
+        @SerializedName("action_result")
+        @Expose
+        private String action_result;
+        public String getAction_result() { return this.action_result; }
+
+        //요청성공 메시지 / 실패: null , 성공:접근 성공
+        @SerializedName("action_success_message")
+        @Expose
+        private String action_success_message;
+        public String getAction_success_message() { return this.action_success_message; }
+
+        //요청 실패코드 / 실패: E0202
+        @SerializedName("action_failure_code")
+        @Expose
+        private String action_failure_code;
+        public String getAction_failure_code() { return this.action_failure_code; }
+
+        //요청 실패 이유 / 실패: 전달 인자 값이 올바르지 않습니다
+        @SerializedName("action_failure_reason")
+        @Expose
+        private String action_failure_reason;
+        public String getAction_failure_reason() { return this.action_failure_reason; }
+
+    }
+
+    //Response Info
+    @SerializedName("info")
     @Expose
-    private String phone;
+    private Info info;
+    public Info getInfoInfo() { return info; }
+    public class Info {
+        @SerializedName("name")
+        @Expose
+        private String name;
+        public String getName() { return this.name; }
 
-    @SerializedName("action_result")
-    @Expose
-    private String action_result;
-
-    @SerializedName("action_success_message")
-    @Expose
-    private String action_success_message;
-
-    @SerializedName("userId")
-    @Expose
-    private String userId;
-
-    @SerializedName("id")
-    @Expose
-    private String id;
-
-    @SerializedName("title")
-    @Expose
-    private String title;
-
-    @SerializedName("body")
-    @Expose
-    private String body;
-
-    public String getuserId() { return this.userId; }
-    public String getid() { return this.id; }
-    public String gettitle() { return this.title; }
-    public String getbody() { return this.body; }
-//
-//    @SerializedName("info")
-//    @Expose
-//    private String info;
-    
-    public String getName() { return this.name; }
-    public String getPhone() { return this.phone; }
-    public String getAction_result() { return this.action_result; }
-    public String getAction_success_message() { return this.action_success_message; }
-
-//    	"response": {
-//        "action_result": "success",
-//                "action_failure_code": "",
-//                "action_failure_reason": "",
-//                "action_success_message": "접근 성공"
-//    },
-//            "info": {
-//        "name": "김동주",
-//                "phone": "010-1234-1234"
-//    }
-
+        @SerializedName("phone")
+        @Expose
+        private String phone;
+        public String getPhone() { return this.phone; }
+    }
 }
 
 
