@@ -1,13 +1,7 @@
 package com.example.hj.retrofit.Retrofit;
 
 import android.util.Log;
-import android.widget.TextView;
-
-import com.example.hj.retrofit.MainActivity;
-
 import java.util.HashMap;
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -18,6 +12,7 @@ import static com.example.hj.retrofit.MainActivity.mainActivity;
 
 public class RetrofitClient {
     private Retrofit retrofit;
+    private RetrofitService retrofitService;
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //"https://2018-anyfood-dev.workservice.kr:773/"
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,15 +31,15 @@ public class RetrofitClient {
                     .baseUrl(RetrofitService.url)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
+
+            //API instance 생성
+            retrofitService = retrofit.create(RetrofitService.class);
         }
         return retrofit;
     }
 
     public void get() {
-        //API interface 생성
-        RetrofitService retrofitService_get = retrofit.create(RetrofitService.class);
-
-        Call<RetrofitRepo> comment = retrofitService_get.getGet("dongju");
+        Call<RetrofitRepo> comment = retrofitService.getGet("dongju");
         comment.enqueue(new Callback<RetrofitRepo>() {
             @Override
             public void onResponse(Call<RetrofitRepo> call, Response<RetrofitRepo> response) {
@@ -77,12 +72,8 @@ public class RetrofitClient {
 
     public void post()
     {
-        //API Interface 생성
-        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-
         HashMap<String, Object> input = new HashMap<>();
       //  input.put("김동주", "010-1234-1234");
-
         Call<RetrofitRepo> call = retrofitService.getComments(input);
         //요청 수행
         call.enqueue(new Callback<RetrofitRepo>() {
@@ -90,8 +81,6 @@ public class RetrofitClient {
             @Override
                 public void onResponse(Call<RetrofitRepo> call, Response<RetrofitRepo> respon) {
                     RetrofitRepo Repo = respon.body();
-                    //         textview.setText(repo.getName());
-                    //        textview.setText(repo.toString());
                     Log.v("Test_Retrofit","Success to Response");
                     Log.v("Test_Retrofit",respon.toString());
                     Log.v("Test_Retrofit",Repo.getResultInfo().getAction_result());
