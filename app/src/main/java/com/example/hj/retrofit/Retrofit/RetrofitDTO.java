@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class RetrofitRepo {
+public class RetrofitDTO {
     // Response에대한 정보를 담는 변수
     private Result resultInfo;
     private Info infoInfo;
@@ -20,7 +20,7 @@ public class RetrofitRepo {
     @SerializedName("result")
     @Expose
     private Result result = null;
-    public Result getResultInfo() { return result; }
+    public Result getResultInfo() { return result; } // Json 객체의 Result값을 반환한다.
 
     public class Result {
         //요청결과 / 실패 : failure , 성공 : success
@@ -53,13 +53,15 @@ public class RetrofitRepo {
     @SerializedName("info")
     @Expose
     private Info info;
-    public Info getInfoInfo() { return info; }
+    public Info getInfoInfo() { return info; } //Json객체의 Info 값을 반환한다.
     public class Info {
+        //요청 성공시 이름 정보, 실패시 Info 정보는 출력되지 않음.
         @SerializedName("name")
         @Expose
         private String name;
         public String getName() { return this.name; }
 
+        //요청 성공시 전화번호 정보, 실패시 Info 정보는 출력되지 않음.
         @SerializedName("phone")
         @Expose
         private String phone;
