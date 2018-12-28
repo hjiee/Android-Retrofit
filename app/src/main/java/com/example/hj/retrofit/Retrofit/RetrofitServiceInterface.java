@@ -20,7 +20,7 @@ public interface RetrofitServiceInterface {
      * @return Data 객체를 JSON 형태로 반환
      */
     @GET("{path}")
-    Call<RetrofitDTO> GetComments(@Path("path") Object path ,@Query("act") Object act);
+    Call<RetrofitRepo> GetComments(@Path("path") Object path , @Query("act") Object act);
 
     /**
      * @POST("/posts") : POST 방식의 통신입니다.
@@ -33,7 +33,5 @@ public interface RetrofitServiceInterface {
      */
     @FormUrlEncoded
     @POST("{path}")
-    Call<RetrofitDTO> PostComments(@Path("path") Object path, @FieldMap HashMap<String, Object> param);
-
-
+    Call<RetrofitRepo> PostComments(@Path("path") Object path, @FieldMap HashMap<String, Object> param);
 }

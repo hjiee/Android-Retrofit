@@ -3,6 +3,7 @@ package com.example.hj.retrofit.Retrofit;
 import android.util.Log;
 
 import com.example.hj.retrofit.ConstantDefine;
+import com.example.hj.retrofit.MainActivity;
 
 import java.util.HashMap;
 import retrofit2.Call;
@@ -11,12 +12,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.example.hj.retrofit.MainActivity.mainActivity;
-
 public class RetrofitClient {
     private Retrofit retrofit;
     private RetrofitServiceInterface retrofitServiceInterface;
     private RetrofitClient retrofitClient;
+
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,31 +28,43 @@ public class RetrofitClient {
      */
     public RetrofitClient() {
         //API instance 생성
+//        retrofit = new Retrofit.Builder()
+//                .baseUrl(ConstantDefine.BASE_URL)
+//                .addConverterFactory(GsonConverterFactory.create()) //request / response json을 자동으로 conver해준다.
+//                .build();
+
+
+    }
+    public Retrofit getRetrofitIntance()
+    {
         retrofit = new Retrofit.Builder()
                 .baseUrl(ConstantDefine.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create()) //request / response json을 자동으로 conver해준다.
                 .build();
         retrofitServiceInterface = retrofit.create(RetrofitServiceInterface.class);
+        return retrofit;
     }
 
     public void get(String path) {
-        Call<RetrofitDTO> comment = retrofitServiceInterface.GetComments(path,mainActivity.getEdittext());
-        comment.enqueue(new Callback<RetrofitDTO>() {
+
+
+        Call<RetrofitRepo> comment = retrofitServiceInterface.GetComments(path,((MainActivity)MainActivity.mContext).getMainActivityInstance().getEdittext());
+        comment.enqueue(new Callback<RetrofitRepo>() {
             /**
              * @param call
              * @param response 통신 완료후 받은 객체
              *                 response.body()는 resposejson이 deserialize된 responseJson 객체.
              */
             @Override
-            public void onResponse(Call<RetrofitDTO> call, Response<RetrofitDTO> response) {
+            public void onResponse(Call<RetrofitRepo> call, Response<RetrofitRepo> response) {
                 Log.v("Test_Retrofit", "Response Success to GET");
                 Log.v("Test_Retrofit", response.toString());
-                RetrofitDTO Repo = response.body();
+                RetrofitRepo Repo = response.body();
                 setText(Repo);
             }
 
             @Override
-            public void onFailure(Call<RetrofitDTO> call, Throwable t) {
+            public void onFailure(Call<RetrofitRepo> call, Throwable t) {
                 Log.v("Test_Retrofit", "Response Fail to GET");
             }
         });
@@ -62,37 +74,37 @@ public class RetrofitClient {
     {
         //POST parameter
         HashMap<String, Object> input = new HashMap<>();
-        input.put("act", mainActivity.getEdittext());
-        Call<RetrofitDTO> call = retrofitServiceInterface.PostComments(path,input);
+        input.put("act", ((MainActivity)MainActivity.mContext).getMainActivityInstance().getEdittext());
+        Call<RetrofitRepo> call = retrofitServiceInterface.PostComments(path,input);
         //요청 수행
-        call.enqueue(new Callback<RetrofitDTO>() {
+        call.enqueue(new Callback<RetrofitRepo>() {
             //성공시
             @Override
-                public void onResponse(Call<RetrofitDTO> call, Response<RetrofitDTO> respon) {
+                public void onResponse(Call<RetrofitRepo> call, Response<RetrofitRepo> respon) {
                     Log.v("Test_Retrofit","Response Success to POST");
                     Log.v("Test_Retrofit",respon.toString());
-                    RetrofitDTO Repo = respon.body();
+                    RetrofitRepo Repo = respon.body();
                     setText(Repo);
             }
             //실패시
             @Override
-            public void onFailure(Call<RetrofitDTO> call, Throwable t) {
+            public void onFailure(Call<RetrofitRepo> call, Throwable t) {
                 Log.v("Test_Retrofit", "Response Fail to POST");
             }
         });
 
 
     }
-    public void setText(RetrofitDTO Repo)
+    public void setText(RetrofitRepo Repo)
     {
         if(Repo.getInfoInfo() == null) {
-            mainActivity.gettextview().setText(Repo.getResultInfo().getAction_result() + "\n"
+            ((MainActivity)MainActivity.mContext).getMainActivityInstance().gettextview().setText(Repo.getResultInfo().getAction_result() + "\n"
                     .concat(Repo.getResultInfo().getAction_failure_code() + "\n")
                     .concat(Repo.getResultInfo().getAction_failure_reason() + "\n"));
         }
         else
         {
-            mainActivity.gettextview().setText(Repo.getResultInfo().getAction_result() + "\n"
+            ((MainActivity)MainActivity.mContext).getMainActivityInstance().gettextview().setText(Repo.getResultInfo().getAction_result() + "\n"
                     .concat(Repo.getResultInfo().getAction_success_message() + "\n")
                     .concat(Repo.getInfoInfo().getName() + "\n")
                     .concat(Repo.getInfoInfo().getPhone()));

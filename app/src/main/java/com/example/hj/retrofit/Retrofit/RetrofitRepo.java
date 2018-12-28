@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class RetrofitDTO {
+public class RetrofitRepo {
     // Response에대한 정보를 담는 변수
     private Result resultInfo;
     private Info infoInfo;
