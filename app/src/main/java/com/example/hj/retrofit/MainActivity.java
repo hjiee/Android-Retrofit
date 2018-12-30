@@ -41,18 +41,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int nGetViewId = v.getId();
         switch (nGetViewId){
             case R.id.btn_get1:
-                retrofitClient.get(ConstantDefine.FIRST_END_POINT);
+                retrofitClient.get(ConstantDefine.DEF_FIRST_END_POINT);
                 break;
             case R.id.btn_get2:
-                retrofitClient.get(ConstantDefine.SECOND_END_POINT);
+                retrofitClient.get(ConstantDefine.DEF_SECOND_END_POINT);
                 break;
             case R.id.btn_post1:
-                retrofitClient.post(ConstantDefine.FIRST_END_POINT);
+                retrofitClient.post(ConstantDefine.DEF_FIRST_END_POINT);
                 break;
             case R.id.btn_post2:
-                retrofitClient.post(ConstantDefine.SECOND_END_POINT);
+                retrofitClient.post(ConstantDefine.DEF_SECOND_END_POINT);
                 break;
         }
+ //       setText();
     }
 
     //endregion Class Override Fuction
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mContext = new MainActivity();
         return (MainActivity)mContext;
     }
+
     // Activity 초기화 관련 내용을 Override 구현 한다.
     public void reConnectedWidget()
     {
@@ -84,4 +86,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_get2.setOnClickListener(this);
         btn_post2.setOnClickListener(this);
     }
+//    public void setText()
+//    {
+//        UserInfoDTO
+//        if(Repo.getInfoInfo() == null) {
+//            ((MainActivity)MainActivity.mContext).getMainActivityInstance().gettextview().setText(Repo.getResultInfo().getAction_result() + "\n"
+//                    .concat(Repo.getResultInfo().getAction_failure_code() + "\n")
+//                    .concat(Repo.getResultInfo().getAction_failure_reason() + "\n"));
+//        }
+//        else
+//        {
+//            ((MainActivity)MainActivity.mContext).getMainActivityInstance().gettextview().setText(Repo.getResultInfo().getAction_result() + "\n"
+//                    .concat(Repo.getResultInfo().getAction_success_message() + "\n")
+//                    .concat(Repo.getInfoInfo().getName() + "\n")
+//                    .concat(Repo.getInfoInfo().getPhone()));
+//        }
+//    }
 }
