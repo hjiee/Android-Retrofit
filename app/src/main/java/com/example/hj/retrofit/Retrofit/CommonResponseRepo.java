@@ -12,6 +12,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 public class CommonResponseRepo {
 
@@ -26,8 +27,10 @@ public class CommonResponseRepo {
          * @param act 요청에 필요한 값.
          * @return Data 객체를 JSON 형태로 반환
          */
-        @GET("{path}")
-        Call<CommonResponseRepo> GetComments(@Path("path") Object path , @Query("act") Object act);
+//        @GET("{path}")
+//        Call<CommonResponseRepo> GetComments(@Path("path") Object path , @Query("act") Object act);
+        @GET
+        Call<CommonResponseRepo> GetComments(@Url String strURL, @Query("act") Object act);
 
         /**
          * @POST("/posts") : POST 방식의 통신입니다.
@@ -39,21 +42,43 @@ public class CommonResponseRepo {
          * @return Data 객체를 JSON 형태로 반환.
          */
         @FormUrlEncoded
-        @POST("{path}")
-        Call<CommonResponseRepo> PostComments(@Path("path") Object path, @FieldMap HashMap<String, Object> param);
+ //       @POST("{path}")
+ //       Call<CommonResponseRepo> PostComments(@Path("path") Object path, @FieldMap HashMap<String, Object> param);
+        @POST
+        Call<CommonResponseRepo> PostComments(@Url String strURL, @FieldMap HashMap<String, Object> param);
     }
     //endregion CommonResponseInterface
     ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Response에대한 정보를 담는 변수
-    private Result resultInfo;
-    private Info infoInfo;
 
     /**
      * @SerializedName GSON 자바 객체 필드에 JSON 키를 매핑하는 어노테이션
      * @DTO <Data Transfer Object> 로직을 갖고 있지 않는 순수한 데이터 객체이며 속성과 그 속성에 접근하기 위한 getter, setter 메소드만 가진 클래스를 말합니다
      * @Expose object class의 필드에 @Expose 어노테이션을 추가하면 해당 필드만 json으로 만들어준다
      */
+
+    //Response get
+    @SerializedName("get_args")
+    @Expose
+    private GetArgs get_args;
+    public GetArgs getArgs() { return get_args; }
+    public class GetArgs {
+        @SerializedName("act")
+        @Expose
+        private String act;
+        public String getAct() { return this.act; }
+    }
+
+    //Response post
+    @SerializedName("post_args")
+    @Expose
+    private PostArgs post_args = null;
+    public PostArgs postArgs() { return post_args; }
+    public class PostArgs {
+        @SerializedName("act")
+        @Expose
+        private String act;
+        public String getAct() { return this.act; }
+    }
 
     //Response result
     @SerializedName("result")
