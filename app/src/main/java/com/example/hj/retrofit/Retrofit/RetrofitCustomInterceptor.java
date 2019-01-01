@@ -10,7 +10,9 @@ import okhttp3.Response;
 
 public class RetrofitCustomInterceptor implements Interceptor {
     Context objContext = null;
-
+    /**
+     * @Intercepter Retrofit에서 Okhttp를 이용하여 실행시마다 항상 같은 쿠키값을 유지하는 방법
+     */
     public RetrofitCustomInterceptor(Context context) {
         this.objContext = context;
     }

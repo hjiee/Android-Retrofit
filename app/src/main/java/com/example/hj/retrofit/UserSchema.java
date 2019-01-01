@@ -2,11 +2,6 @@ package com.example.hj.retrofit;
 
 import android.content.Context;
 
-import com.example.hj.retrofit.Retrofit.RetrofitCustomInterceptor;
-
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -23,14 +18,16 @@ public class UserSchema {
 
     public static Retrofit getRetrofitInstance(Context context)
     {
-        OkHttpClient.Builder objOkHttpClientBuilder = new OkHttpClient.Builder()
-                .readTimeout(TIMEOUT_CONNECTION, TimeUnit.MILLISECONDS)
-                .connectTimeout(TIMEOUT_CONNECTION, TimeUnit.MILLISECONDS);
-        objOkHttpClientBuilder.interceptors().add(new RetrofitCustomInterceptor(context));
+
+//        OkHttpClient.Builder objOkHttpClientBuilder = new OkHttpClient.Builder()
+//                .readTimeout(TIMEOUT_CONNECTION, TimeUnit.MILLISECONDS)
+//                .connectTimeout(TIMEOUT_CONNECTION, TimeUnit.MILLISECONDS);
+//        objOkHttpClientBuilder.interceptors().add(new RetrofitCustomInterceptor(context));
 
         Retrofit objRetrofit = new Retrofit.Builder()
                 .baseUrl(DEF_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+//                .client(objOkHttpClientBuilder.build())
                 .build() ;
 
         return objRetrofit;

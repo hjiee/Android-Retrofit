@@ -10,7 +10,6 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
 
@@ -20,8 +19,9 @@ public class CommonResponseRepo {
     //region CommonResponseInterface
     public interface CommonResponseInterface {
         /**
+         * @Gson 자바 객체와 JSON 간의 직렬화 및 역직렬화를 위한 오픈소스 자바 라이브러리이다.
          * @GET GET 방식의 통신입니다.
-         * @Path 값의 경로를 지정한다. {}를 이용하여 데이터값은 입력받을 수 있다.
+         * @Path 값의 경로를 지정한다. {}를 이용하여 데이터값을 입력받을 수 있다.
          * @Query 데이터인자 값을 입력 받는다.
          * @details GET/POST/DELETE/PUT 메소드들을 인터페이스에 구현하여 사용할 수 있다.
          * @param act 요청에 필요한 값.
@@ -54,6 +54,7 @@ public class CommonResponseRepo {
      * @SerializedName GSON 자바 객체 필드에 JSON 키를 매핑하는 어노테이션
      * @DTO <Data Transfer Object> 로직을 갖고 있지 않는 순수한 데이터 객체이며 속성과 그 속성에 접근하기 위한 getter, setter 메소드만 가진 클래스를 말합니다
      * @Expose object class의 필드에 @Expose 어노테이션을 추가하면 해당 필드만 json으로 만들어준다
+     *          object 중 해당 값이 null일 경우, json으로 만들 필드를 자동 생략해 준다.
      */
 
     //Response get
