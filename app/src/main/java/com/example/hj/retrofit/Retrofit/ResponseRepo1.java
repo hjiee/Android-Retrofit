@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.HashMap;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.FieldMap;
@@ -14,10 +13,11 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
 
-public class ResponseRepo2 {
+public class ResponseRepo1 {
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    //region ResponseInterface2
-    public interface ResponseInterface2 {
+    //region ResponseInterface1
+    public interface ResponseInterface1 {
         /**
          * @Gson 자바 객체와 JSON 간의 직렬화 및 역직렬화를 위한 오픈소스 자바 라이브러리이다.
          * @GET GET 방식의 통신입니다.
@@ -28,7 +28,7 @@ public class ResponseRepo2 {
          * @return Data 객체를 JSON 형태로 반환
          */
         @GET
-        Call<List<ResponseRepo2>> GetComments(@Url String strURL, @Query("act") Object act);
+        Call<ResponseRepo1> GetComments(@Url String strURL, @Query("act") Object act);
 
         /**
          * @POST("/posts") : POST 방식의 통신입니다.
@@ -41,9 +41,9 @@ public class ResponseRepo2 {
          */
         @FormUrlEncoded
         @POST
-        Call<List<ResponseRepo2>> PostComments(@Url String strURL, @FieldMap HashMap<String, Object> param);
+        Call<ResponseRepo1> PostComments(@Url String strURL, @FieldMap HashMap<String, Object> param);
     }
-    //endregion CommonResponseInterface
+    //endregion ResponseInterface1
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -55,11 +55,19 @@ public class ResponseRepo2 {
     public String getName()     { return objinfo.getInfo().getName(); }
     public String getPhone()    { return objinfo.getInfo().getPhone(); }
 
-    @SerializedName("result")   @Expose private ResponseRepo1.Result objresult;
-    @SerializedName("info")     @Expose private ResponseRepo1.Info objinfo;
-    public ResponseRepo1.Result getResponseResult() {return objresult;}
-    public ResponseRepo1.Info getResponseInfo() { return objinfo; }
+    @SerializedName("result")   @Expose private Result objresult;
+    @SerializedName("info")     @Expose private Info objinfo;
+    public Result getResponseResult() {return objresult;}
+    public Info getResponseInfo() { return objinfo; }
 
     public class Result extends CommonResponseRepo {}
     public class Info extends CommonResponseRepo {}
+
+
+
+
+
+
 }
+
+

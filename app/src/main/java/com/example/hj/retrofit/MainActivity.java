@@ -1,6 +1,5 @@
 package com.example.hj.retrofit;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,11 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hj.retrofit.DTO.UserInfoDTO;
-import com.example.hj.retrofit.Retrofit.CommonResponseRepo;
+import com.example.hj.retrofit.Retrofit.ResponseRepo1;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -103,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            setText((CommonResponseRepo)msg.obj,msg.arg1);
+            setText((ResponseRepo1)msg.obj,msg.arg1);
             switch(msg.what) {
 
             }
@@ -127,8 +125,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void run()
         {
             Retrofit retrofit = UserSchema.getRetrofitInstance();
-            CommonResponseRepo.CommonResponseInterface service = retrofit.create(CommonResponseRepo.CommonResponseInterface.class);
-            Call<CommonResponseRepo> comment = null; //만들어둔 interface를 호출하기위한 Call 생성.
+            ResponseRepo1.ResponseInterface1 service = retrofit.create(ResponseRepo1.ResponseInterface1.class);
+            Call<ResponseRepo1> comment = null; //만들어둔 interface를 호출하기위한 Call 생성.
             HashMap<String,Object> input = new HashMap<>();
             input.put("act",name);
             input.put("phone",phone);
@@ -144,10 +142,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             //enqueue를 통해 Callback에 대해서 정의
-            comment.enqueue(new Callback<CommonResponseRepo>() {
+            comment.enqueue(new Callback<ResponseRepo1>() {
                 @Override
-                public void onResponse(Call<CommonResponseRepo> call, Response<CommonResponseRepo> response) {
-                    CommonResponseRepo Repo = response.body();
+                public void onResponse(Call<ResponseRepo1> call, Response<ResponseRepo1> response) {
+                    ResponseRepo1 Repo = response.body();
 
                     //Handler로 Response 넘기기.
                     MessageHanldler handler = new MessageHanldler();
@@ -163,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 @Override
-                public void onFailure(Call<CommonResponseRepo> call, Throwable t) {
+                public void onFailure(Call<ResponseRepo1> call, Throwable t) {
                     Log.v("Test_Retrofit","Connection Fail");
                     Toast.makeText(getApplicationContext(),"Network Connection Fail",Toast.LENGTH_LONG).show();
                 }
@@ -174,32 +172,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     //통신한 결과값을 TextView에 표시한다.
-    public void setText(CommonResponseRepo Repo,int originMethod)
+    public void setText(ResponseRepo1 Repo, int originMethod)
     {
-        //잘못된 인자가 전달되었을때
-        if(Repo.getResultInfo().getAction_result().equals("failure")) {
 
-            textview.setText("요청결과 : " + Repo.getResultInfo().getAction_result() + "\n"
-                    + ("에러코드 : "+Repo.getResultInfo().getAction_failure_code() + "\n")
-                    + ("메시지 : "+Repo.getResultInfo().getAction_failure_reason() + "\n"));
+        //잘못된 인자가 전달되었을때
+        if(Repo.getAction_result().equals("failure")) {
+
+            textview.setText("요청결과 : " + Repo.getAction_result() + "\n"
+                    + ("에러코드 : "+Repo.getAction_failure_code() + "\n")
+                    + ("메시지 : "+Repo.getAction_failure_reason() + "\n"));
         }
         else
         {
             switch(originMethod) // Get or Post
             {
                 case 0: //GET 요청에 대한 결과값
-                    textview.setText("요청결과 : "+Repo.getResultInfo().getAction_result() + "\n"
-                            + ("메시지 : "+Repo.getResultInfo().getAction_success_message() + "\n")
-                            + ("이름 : "+Repo.getInfoInfo().getName() + "\n")
-                            + ("전화번호 : "+Repo.getInfoInfo().getPhone() + "\n")
+                    textview.setText("요청결과 : "+Repo.getAction_result() + "\n"
+                            + ("메시지 : "+Repo.getAction_success_message() + "\n")
+                            + ("이름 : "+Repo.getName() + "\n")
+                            + ("전화번호 : "+Repo.getPhone() + "\n")
 
                     );
                     break;
                 case 1: // POST 요청에 대한 결과값
-                    textview.setText("요청결과 : "+Repo.getResultInfo().getAction_result() + "\n"
-                            + ("메시지 : "+Repo.getResultInfo().getAction_success_message() + "\n")
-                            + ("이름 : "+Repo.getInfoInfo().getName() + "\n")
-                            + ("전화번호 : "+Repo.getInfoInfo().getPhone() + "\n")
+                    textview.setText("요청결과 : "+Repo.getAction_result() + "\n"
+                            + ("메시지 : "+Repo.getAction_success_message() + "\n")
+                            + ("이름 : "+Repo.getName() + "\n")
+                            + ("전화번호 : "+Repo.getPhone() + "\n")
                     );
                     break;
             }
