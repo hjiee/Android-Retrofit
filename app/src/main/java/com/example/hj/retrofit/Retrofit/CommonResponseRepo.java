@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.HashMap;
 
 import retrofit2.Call;
+import retrofit2.Retrofit;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -27,8 +28,6 @@ public class CommonResponseRepo {
          * @param act 요청에 필요한 값.
          * @return Data 객체를 JSON 형태로 반환
          */
-//        @GET("{path}")
-//        Call<CommonResponseRepo> GetComments(@Path("path") Object path , @Query("act") Object act);
         @GET
         Call<CommonResponseRepo> GetComments(@Url String strURL, @Query("act") Object act);
 
@@ -42,8 +41,6 @@ public class CommonResponseRepo {
          * @return Data 객체를 JSON 형태로 반환.
          */
         @FormUrlEncoded
- //       @POST("{path}")
- //       Call<CommonResponseRepo> PostComments(@Path("path") Object path, @FieldMap HashMap<String, Object> param);
         @POST
         Call<CommonResponseRepo> PostComments(@Url String strURL, @FieldMap HashMap<String, Object> param);
     }
@@ -57,81 +54,44 @@ public class CommonResponseRepo {
      *          object 중 해당 값이 null일 경우, json으로 만들 필드를 자동 생략해 준다.
      */
 
-    //Response get
-    @SerializedName("get_args")
-    @Expose
-    private GetArgs get_args;
-    public GetArgs getArgs() { return get_args; }
-    public class GetArgs {
-        @SerializedName("act")
-        @Expose
-        private String act;
-        public String getAct() { return this.act; }
-    }
+//    @SerializedName("get_args") private Args get_args = null;
+//    @SerializedName("post_args") private Args post_args = null;
+//    public Args Get_args() { return get_args; }
+//    public Args Post_args() { return post_args; }
+//
+//    public class Args {
+//        @SerializedName("act") private String param;
+//        public String getArgs_get() { return this.param; }
+//    }
 
-    //Response post
-    @SerializedName("post_args")
-    @Expose
-    private PostArgs post_args = null;
-    public PostArgs postArgs() { return post_args; }
-    public class PostArgs {
-        @SerializedName("act")
-        @Expose
-        private String act;
-        public String getAct() { return this.act; }
-    }
 
-    //Response result
-    @SerializedName("result")
-    @Expose
-    private Result result = null;
-    public Result getResultInfo() { return result; } // Json 객체의 Result값을 반환한다.
+    @SerializedName("result")      @Expose private Result result = null;//Response result
+    @SerializedName("info")        @Expose private Info info;     //Response Info
+
+    public Result getResultInfo()   { return result; } // Json 객체의 Result값을 반환한다.
+    public Info getInfoInfo()       { return info; } //Json객체의 Info 값을 반환한다.
 
     public class Result {
-        //요청결과 / 실패 : failure , 성공 : success
-        @SerializedName("action_result")
-        @Expose
-        private String action_result;
-        public String getAction_result() { return this.action_result; }
+        @SerializedName("action_result")           @Expose private String action_result;           //요청결과 / 실패 : failure , 성공 : success
+        @SerializedName("action_success_message")  @Expose private String action_success_message;  //요청성공 메시지 / 실패: null , 성공:접근 성공
+        @SerializedName("action_failure_code")     @Expose private String action_failure_code;     //요청 실패코드 / 실패: E0202
+        @SerializedName("action_failure_reason")   @Expose private String action_failure_reason;   //요청 실패 이유 / 실패: 전달 인자 값이 올바르지 않습니다
 
-        //요청성공 메시지 / 실패: null , 성공:접근 성공
-        @SerializedName("action_success_message")
-        @Expose
-        private String action_success_message;
-        public String getAction_success_message() { return this.action_success_message; }
+        public String getAction_result()            { return this.action_result; }
+        public String getAction_success_message()   { return this.action_success_message; }
+        public String getAction_failure_code()      { return this.action_failure_code; }
+        public String getAction_failure_reason()    { return this.action_failure_reason; }
+    } // Class Result End
 
-        //요청 실패코드 / 실패: E0202
-        @SerializedName("action_failure_code")
-        @Expose
-        private String action_failure_code;
-        public String getAction_failure_code() { return this.action_failure_code; }
-
-        //요청 실패 이유 / 실패: 전달 인자 값이 올바르지 않습니다
-        @SerializedName("action_failure_reason")
-        @Expose
-        private String action_failure_reason;
-        public String getAction_failure_reason() { return this.action_failure_reason; }
-
-    }
-
-    //Response Info
-    @SerializedName("info")
-    @Expose
-    private Info info;
-    public Info getInfoInfo() { return info; } //Json객체의 Info 값을 반환한다.
     public class Info {
-        //요청 성공시 이름 정보, 실패시 Info 정보는 출력되지 않음.
-        @SerializedName("name")
-        @Expose
-        private String name;
-        public String getName() { return this.name; }
+        @SerializedName("name")    @Expose private String name;    //요청 성공시 이름 정보, 실패시 Info 정보는 출력되지 않음.
+        @SerializedName("phone")   @Expose private String phone;   //요청 성공시 전화번호 정보, 실패시 Info 정보는 출력되지 않음.
 
-        //요청 성공시 전화번호 정보, 실패시 Info 정보는 출력되지 않음.
-        @SerializedName("phone")
-        @Expose
-        private String phone;
-        public String getPhone() { return this.phone; }
-    }
+        public String getName()     { return this.name; }
+        public String getPhone()    { return this.phone; }
+    } // Class Info End
+
+
 }
 
 

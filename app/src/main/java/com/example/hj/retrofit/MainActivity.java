@@ -2,6 +2,8 @@ package com.example.hj.retrofit;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -10,9 +12,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.hj.retrofit.DTO.UserInfoDTO;
 import com.example.hj.retrofit.Retrofit.CommonResponseRepo;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,13 +30,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btn_post1;
     private Button btn_get2;
     private Button btn_post2;
-    private EditText edittext;
-    public Context mContext = null;
-    private RetrofitThread_set retrofitThread_set;
+    private EditText edtName;
+    private EditText edtPhone;
+    private UserInfoDTO userInfoDTO;
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //region Class Override Fuction  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,19 +64,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         int nGetViewId = v.getId();
-        RetrofitThread_set objThread = null;
+        RetrofitThread_Set objThread = null;
+        String name = edtName.getText().toString();
+        String phone = edtPhone.getText().toString();
+
         switch (nGetViewId){
             case R.id.btn_get1:
-                objThread = new RetrofitThread_set(UserSchema.DEF_SUB_END_POINT,"GET");
+                objThread = new RetrofitThread_Set(UserSchema.DEF_SUB_END_POINT,name,phone,UserSchema.originMethodGet);
                 break;
             case R.id.btn_get2:
-                objThread = new RetrofitThread_set(UserSchema.DEF_SUB_END_POINT2,"GET");
+                objThread = new RetrofitThread_Set(UserSchema.DEF_SUB_END_POINT2,name,phone,UserSchema.originMethodGet);
                 break;
             case R.id.btn_post1:
-                objThread = new RetrofitThread_set(UserSchema.DEF_SUB_END_POINT,"POST");
+                objThread = new RetrofitThread_Set(UserSchema.DEF_SUB_END_POINT,name,phone,UserSchema.originMethodPost);
                 break;
             case R.id.btn_post2:
-                objThread = new RetrofitThread_set(UserSchema.DEF_SUB_END_POINT2,"POST");
+                objThread = new RetrofitThread_Set(UserSchema.DEF_SUB_END_POINT2,name,phone,UserSchema.originMethodPost);
                 break;
         }
 
@@ -83,51 +91,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          * 예) 가비지컬렉터, 워드프로세서의 자동저장, 화면자동갱신 등
          */
 
-
         objThread.setDaemon(true);
         objThread.start();
 
 
     }
-
     //endregion Class Override Fuction
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    //region Get Instance
-    public MainActivity getMainActivityInstance()
-    {
-        if(mContext == null)
-            mContext = new MainActivity();
-        return (MainActivity)mContext;
-    }
-    //endregion
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public class MessageHanldler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            setText((CommonResponseRepo)msg.obj,msg.arg1);
+            switch(msg.what) {
 
+            }
+        }
+    }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //region Retrofit Thread
-    private class RetrofitThread_set extends Thread {
+    private class RetrofitThread_Set extends Thread {
         private String strURL = null;
-        private String strConnection = null; //Get / Post 연결방식
-        public RetrofitThread_set(String strURL,String strConnection)
+        private String name = "";
+        private String phone = "";
+        private int originMethod; //Get / Post 연결방식
+        public RetrofitThread_Set(String strURL,String name, String phone, int originMethod)
         {
             this.strURL = UserSchema.DEF_BASE_URL+strURL;
-            this.strConnection = strConnection;
+            this.name = name;
+            this.phone = phone;
+            this.originMethod = originMethod;
+
         }
         public void run()
         {
-            Retrofit retrofit = UserSchema.getRetrofitInstance(mContext);
+            Retrofit retrofit = UserSchema.getRetrofitInstance();
             CommonResponseRepo.CommonResponseInterface service = retrofit.create(CommonResponseRepo.CommonResponseInterface.class);
             Call<CommonResponseRepo> comment = null; //만들어둔 interface를 호출하기위한 Call 생성.
-
-            switch (strConnection)
+            HashMap<String,Object> input = new HashMap<>();
+            input.put("act",name);
+            input.put("phone",phone);
+            switch (originMethod)
             {
-                case "GET":
-                    comment = service.GetComments(strURL, edittext.getText().toString());
+                case 0:
+                    comment = service.GetComments(strURL, name);
                     break;
-                case "POST":
-                    HashMap<String,Object> input = new HashMap<>();
-                    input.put("act",edittext.getText().toString());
+                case 1:
+
                     comment = service.PostComments(strURL,input);
                     break;
             }
@@ -137,14 +148,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onResponse(Call<CommonResponseRepo> call, Response<CommonResponseRepo> response) {
                     CommonResponseRepo Repo = response.body();
-                    Log.v("Test_Retrofit","Connection to Success");
-                    setText(Repo,strConnection);
+
+                    //Handler로 Response 넘기기.
+                    MessageHanldler handler = new MessageHanldler();
+                    Message msg = handler.obtainMessage();
+                    msg.obj = Repo; // Response 객체
+                    msg.arg1 = originMethod; // Http통신 방법 0 : Get or 1 : Post
+
+                    handler.sendMessage(msg);
+
+                    Log.v("Test_Retrofit","Connection Success");
+                    Log.v("Test_Retrofit",response.toString());
+                    Log.v("Test_Retrofit",new Gson().toJson(response.body()));
                 }
 
                 @Override
                 public void onFailure(Call<CommonResponseRepo> call, Throwable t) {
-                    Log.v("Test_Retrofit","Connection to Fail");
-                    Toast.makeText(mContext,"Network Connection to Fail",Toast.LENGTH_LONG).show();
+                    Log.v("Test_Retrofit","Connection Fail");
+                    Toast.makeText(getApplicationContext(),"Network Connection Fail",Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -153,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     //통신한 결과값을 TextView에 표시한다.
-    public void setText(CommonResponseRepo Repo,String strConnection)
+    public void setText(CommonResponseRepo Repo,int originMethod)
     {
         //잘못된 인자가 전달되었을때
         if(Repo.getResultInfo().getAction_result().equals("failure")) {
@@ -164,9 +185,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else
         {
-            switch(strConnection)
+            switch(originMethod) // Get or Post
             {
-                case "GET": //GET 요청에 대한 결과값
+                case 0: //GET 요청에 대한 결과값
                     textview.setText("요청결과 : "+Repo.getResultInfo().getAction_result() + "\n"
                             + ("메시지 : "+Repo.getResultInfo().getAction_success_message() + "\n")
                             + ("이름 : "+Repo.getInfoInfo().getName() + "\n")
@@ -174,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     );
                     break;
-                case "POST": // POST 요청에 대한 결과값
+                case 1: // POST 요청에 대한 결과값
                     textview.setText("요청결과 : "+Repo.getResultInfo().getAction_result() + "\n"
                             + ("메시지 : "+Repo.getResultInfo().getAction_success_message() + "\n")
                             + ("이름 : "+Repo.getInfoInfo().getName() + "\n")
@@ -188,14 +209,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Activity 초기화 관련 내용을 Override 구현 한다.
     public void reConnectedWidget()
     {
-        mContext = this;
-
         textview = (TextView)findViewById(R.id.textview);
         btn_get1 = (Button)findViewById(R.id.btn_get1);
         btn_post1 = (Button)findViewById(R.id.btn_post1);
         btn_get2 = (Button)findViewById(R.id.btn_get2);
         btn_post2 = (Button)findViewById(R.id.btn_post2);
-        edittext = (EditText)findViewById(R.id.edittext);
+        edtName = (EditText)findViewById(R.id.edtName);
+        edtPhone = (EditText)findViewById(R.id.edtPhone);
         btn_get1.setOnClickListener(this);
         btn_post1.setOnClickListener(this);
         btn_get2.setOnClickListener(this);
