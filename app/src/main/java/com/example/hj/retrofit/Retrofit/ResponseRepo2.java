@@ -1,17 +1,17 @@
 package com.example.hj.retrofit.Retrofit;
 
+import com.example.hj.retrofit.Retrofit.Common.CommonResponseRepo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.HashMap;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 
 public class ResponseRepo2 {
@@ -24,11 +24,11 @@ public class ResponseRepo2 {
          * @Path 값의 경로를 지정한다. {}를 이용하여 데이터값을 입력받을 수 있다.
          * @Query 데이터인자 값을 입력 받는다.
          * @details GET/POST/DELETE/PUT 메소드들을 인터페이스에 구현하여 사용할 수 있다.
-         * @param act 요청에 필요한 값.
+         * @param param 요청에 필요한 값.
          * @return Data 객체를 JSON 형태로 반환
          */
         @GET
-        Call<List<ResponseRepo2>> GetComments(@Url String strURL, @Query("act") Object act);
+        Call<ResponseRepo2> GetComments(@Url String strURL, @QueryMap HashMap<String,Object> param);
 
         /**
          * @POST("/posts") : POST 방식의 통신입니다.
@@ -41,24 +41,24 @@ public class ResponseRepo2 {
          */
         @FormUrlEncoded
         @POST
-        Call<List<ResponseRepo2>> PostComments(@Url String strURL, @FieldMap HashMap<String, Object> param);
+        Call<ResponseRepo2> PostComments(@Url String strURL, @FieldMap HashMap<String, Object> param);
     }
     //endregion CommonResponseInterface
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // exntends CoomonResponse
+    public String getAction_result()            { return objresult.getAction_result(); }
+    public String getAction_success_message()   { return objresult.getAction_success_message(); }
+    public String getAction_failure_code()      { return objresult.getAction_failure_code(); }
+    public String getAction_failure_reason()    { return objresult.getAction_failure_reason(); }
 
-    public String getAction_result()            { return objresult.getResult().getAction_result(); }
-    public String getAction_success_message()   { return objresult.getResult().getAction_success_message(); }
-    public String getAction_failure_code()      { return objresult.getResult().getAction_failure_code(); }
-    public String getAction_failure_reason()    { return objresult.getResult().getAction_failure_reason(); }
+    public String getName()     { return objinfo.getName(); }
+    public String getPhone()    { return objinfo.getPhone(); }
 
-    public String getName()     { return objinfo.getInfo().getName(); }
-    public String getPhone()    { return objinfo.getInfo().getPhone(); }
-
-    @SerializedName("result")   @Expose private ResponseRepo1.Result objresult;
-    @SerializedName("info")     @Expose private ResponseRepo1.Info objinfo;
-    public ResponseRepo1.Result getResponseResult() {return objresult;}
-    public ResponseRepo1.Info getResponseInfo() { return objinfo; }
+    @SerializedName("result")   @Expose private Result objresult;
+    @SerializedName("info")     @Expose private Info objinfo;
+    public Result getResponseResult() {return objresult;}
+    public Info getResponseInfo() { return objinfo; }
 
     public class Result extends CommonResponseRepo {}
     public class Info extends CommonResponseRepo {}
